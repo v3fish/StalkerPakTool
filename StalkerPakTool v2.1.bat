@@ -63,6 +63,7 @@ set "REPAK_PATH=%SCRIPT_DIR%repak.exe"
 set "TEMP_DIR=!SCRIPT_DIR!temp_mod_analysis"
 set "FILE_LIST=!TEMP_DIR!\filelist.txt"
 
+:check_game_dir
 :: Check for custom directory first
 if not "!CUSTOM_GAME_DIR!"=="" (
     set "GAME_DIR=!CUSTOM_GAME_DIR!"
@@ -77,12 +78,10 @@ if not "!CUSTOM_GAME_DIR!"=="" (
                 for /f "tokens=1* delims==" %%a in ('type "!CONFIG_FILE!"') do (
                     if /i "%%a"=="gamedir" set "GAME_DIR=%%b"
                 )
-            ) else (
-                goto show_examples
+                goto verify_path
             )
-        ) else (
-            goto show_examples
         )
+        goto show_examples
     )
 ) else if exist "!CONFIG_FILE!" (
     for /f "tokens=1* delims==" %%a in ('type "!CONFIG_FILE!"') do (
@@ -90,6 +89,7 @@ if not "!CUSTOM_GAME_DIR!"=="" (
     )
 )
 
+:verify_path
 if not exist "!GAME_DIR!\Stalker2\Content\Paks" goto show_examples
 goto continue_script
 
@@ -104,7 +104,7 @@ echo.
 echo Enter the correct Stalker 2 folder location:
 set /p "GAME_DIR="
 echo gamedir=!GAME_DIR!>"!CONFIG_FILE!"
-goto continue_script
+goto verify_path
 
 :continue_script
 set "MODS_DIR=!GAME_DIR!\Stalker2\Content\Paks\~mods"
